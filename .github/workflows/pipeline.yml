@@ -9,7 +9,7 @@ on:
 jobs:
   build-release:
     name: Build and Release
-    runs-on: ubunto-latest
+    runs-on: ubuntu-latest
 
     steps:
         - uses: actions/checkout@v4
