@@ -1,7 +1,6 @@
 import { expect, spyOn, mock, afterAll, it } from "bun:test";
 import * as functions from "../functions";
 import { exists, rm, readFile } from "node:fs/promises";
-import { normalize, resolve } from "node:path";
 
 const mutateProjectFileSpy = spyOn(functions, "mutateProjectFile");
 const loadTemplateSpy = spyOn(functions, "loadTemplate");
@@ -37,13 +36,22 @@ it("test generated switf functions - should generate a swift project file", asyn
 	const versionTest = 16;
 	const zipPathTest = "src\\__tests__\\ios-xcframework.zip";
 
-	await functions.execute(testFile, projectNameTest, versionTest, zipPathTest);
+	const artifactUrl =
+		"https://github.com/user-name/project-name/releases/download/v0.2.1/ios-xcframework.zip";
+
+	await functions.execute(
+		testFile,
+		projectNameTest,
+		versionTest,
+		zipPathTest,
+		artifactUrl,
+	);
 
 	const fileContent = await readFile(testFile).then((res) => res.toString());
 
 	expect(mutateProjectFileSpy).toBeCalled();
 	expect(loadTemplateSpy).toBeCalled();
-	expect(generateFileChecksumSpy).toBeCalled();
+	expect(generateFileChecksumSpy).toBeCalledWith(zipPathTest);
 	expect(commitAndPushSpy).toBeCalled();
 	expect(configureGitSpy).toBeCalled();
 
@@ -51,5 +59,5 @@ it("test generated switf functions - should generate a swift project file", asyn
 
 	expect(fileContent).toMatch(projectNameTest);
 	expect(fileContent).toMatch(versionTest.toString());
-	expect(fileContent).toMatch(normalize(resolve(zipPathTest)));
+	expect(fileContent).toMatch(artifactUrl);
 });

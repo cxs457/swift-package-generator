@@ -15,7 +15,7 @@ let package = Package(
    targets: [
       .binaryTarget(
          name: projectName,
-         path: artifactPath,
+         url: artifactUrl,
          checksum: checksumValue
       ),
    ]

@@ -19,24 +19,25 @@ const getActionInput = () => {
 		"ios-version",
 		"artifact-path",
 		"project-file",
+		"artifact-url",
 	];
 
-	const [projectName, iosVersion, artifactPath, projectFile] = inputNames.map(
-		(input) => {
+	const [projectName, iosVersion, artifactPath, projectFile, artifactUrl] =
+		inputNames.map((input) => {
 			const inputValue = getInput(input);
 			if (!inputValue) {
 				throw new Error(`${input} is required.`);
 			}
 
 			return inputValue;
-		},
-	);
+		});
 
 	return {
 		projectName,
 		iosVersion,
 		artifactPath,
 		projectFile,
+		artifactUrl,
 	};
 };
 
@@ -91,19 +92,19 @@ const mutateProjectFile = async (
 	checksum: string,
 	projectName: string,
 	iosVersion: number,
-	zipFilePath: string,
+	zipFileUrl: string,
 ) => {
 	const replacers = {
 		projectName: "projectName",
 		iosVersion: "iosVersion",
-		artifactPath: "artifactPath",
+		artifactUrl: "artifactUrl",
 		checksum: "checksumValue",
 	};
 
 	const newContent = templateContent
 		.replaceAll(replacers.projectName, `"${projectName}"`)
 		.replaceAll(replacers.iosVersion, `.v${iosVersion}`)
-		.replaceAll(replacers.artifactPath, `"${normalize(resolve(zipFilePath))}"`)
+		.replaceAll(replacers.artifactUrl, `"${zipFileUrl}"`)
 		.replaceAll(replacers.checksum, `"${checksum}"`);
 
 	info("Applying changes...");
@@ -141,6 +142,7 @@ const execute = async (
 	projectName: string,
 	iosVersion: number,
 	artifactPath: string,
+	artifactUrl: string,
 ) => {
 	try {
 		const [template, checksum] = await Promise.all([
@@ -153,7 +155,7 @@ const execute = async (
 			checksum,
 			projectName,
 			iosVersion,
-			artifactPath,
+			artifactUrl,
 		);
 
 		await writeFile(projectFile, newContent);

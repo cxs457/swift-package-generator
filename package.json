@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "main": "dist/index.js",
   "scripts": {
-    "build": "bun build index.ts --outfile dist/index.js --target node"
+    "build": "bun build index.ts --outfile dist/index.js --target node",
+    "prepare": "husky"
   },
   "author": "Christian Alexsander Santos",
   "license": "MIT",
@@ -13,6 +14,7 @@
     "@types/bun": "^1.2.2",
     "@types/node": "^22.13.4",
     "esbuild": "0.24.2",
+    "husky": "^9.1.7",
     "typescript": "^5.6.3"
   },
   "dependencies": {

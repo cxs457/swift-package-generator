@@ -1,7 +1,7 @@
 import { getActionInput, execute } from "./src/functions";
 
 const run = async () => {
-	const { artifactPath, iosVersion, projectName, projectFile } =
+	const { artifactPath, iosVersion, projectName, projectFile, artifactUrl } =
 		getActionInput();
 
 	const numberIosVersion = Number.parseInt(iosVersion);
@@ -10,7 +10,13 @@ const run = async () => {
 		throw new Error("iosVersion must be an interger.");
 	}
 
-	await execute(projectFile, projectName, numberIosVersion, artifactPath);
+	await execute(
+		projectFile,
+		projectName,
+		numberIosVersion,
+		artifactPath,
+		artifactUrl,
+	);
 };
 
 run();

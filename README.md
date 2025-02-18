@@ -1,37 +1,42 @@
 # Swift Package Generator
 
-A GitHub Action to automatically generate Swift Package based on inputs
+This GitHub Action automatically generates and commits a Swift Package using provided input parameters.
 
-## Features
+## Description
 
-- Generate Swift Package file
+This action simplifies the process of creating and updating Swift Packages.  It takes your `package.swift` file, project name, iOS target version, and artifact path as input, and generates the necessary files, commits the changes, and optionally attaches a release artifact.
+
+## Inputs
+
+| Name             | Description                               | Required | Default |
+|-----------------|-------------------------------------------|----------|---------|
+| `project-file`  | Path to the `Package.swift` file.         | Yes      | `package.swift` |
+| `project-name`  | Project Name.                             | Yes      |         |
+| `ios-version`   | iOS target version.                       | No       | `16`     |
+| `artifact-path` | Path to the release artifact zip file.    | Yes      |         |
 
 ## Usage
 
+To use this action in your workflow, add the following to your `.github/workflows/main.yml` file:
+
 ```yaml
-name: Generate Swift Package
+name: Build and Release Swift Package
 
 on:
   push:
-    branchs:
+    branch:
       - develop
 
 jobs:
-  generate-swift-package:
+  build:
     runs-on: macos-latest
     steps:
-     # To just add a reminder comment:
-      - uses: cxs457/package-swift-gen@last-release
-
+      - uses: actions/checkout@v3
+      - name: Generate Swift Package
+        uses: cxs457/swift-package-generator@v1 # Replace with the correct action name
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          file-path: 'build.gradle'
-          increment-type: 'patch'
-          mode: 'comment-only'
-    
+          project-file: Package.swift
+          project-name: MySwiftPackage
+          ios-version: 15 # Example: Override default iOS version
+          artifact-path: build/MySwiftPackage.zip # Example: Path to your artifact
 
-```
-
-## License
-
-MIT
