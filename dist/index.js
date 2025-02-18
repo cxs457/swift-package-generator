@@ -22677,7 +22677,7 @@ var require_github = __commonJS((exports) => {
 var core = __toESM(require_core(), 1);
 var exec = __toESM(require_exec(), 1);
 var github = __toESM(require_github(), 1);
-import {join, resolve, normalize} from "node:path";
+import {join, resolve} from "node:path";
 import {readFile, writeFile} from "node:fs/promises";
 import {createHash} from "node:crypto";
 var handleError = (err) => {
@@ -22688,9 +22688,10 @@ var getActionInput = () => {
     "project-name",
     "ios-version",
     "artifact-path",
-    "project-file"
+    "project-file",
+    "artifact-url"
   ];
-  const [projectName, iosVersion, artifactPath, projectFile] = inputNames.map((input) => {
+  const [projectName, iosVersion, artifactPath, projectFile, artifactUrl] = inputNames.map((input) => {
     const inputValue = core.getInput(input);
     if (!inputValue) {
       throw new Error(`${input} is required.`);
@@ -22701,7 +22702,8 @@ var getActionInput = () => {
     projectName,
     iosVersion,
     artifactPath,
-    projectFile
+    projectFile,
+    artifactUrl
   };
 };
 var commitAndPush = async (filePath) => {
@@ -22739,14 +22741,14 @@ var configureGit = async () => {
   await exec.exec("git", ["config", "--global", "user.name", "GitHub Action"]);
   await exec.exec("git", ["config", "--global", "user.email", "action@github.com"]);
 };
-var mutateProjectFile = async (templateContent, checksum, projectName, iosVersion, zipFilePath) => {
+var mutateProjectFile = async (templateContent, checksum, projectName, iosVersion, zipFileUrl) => {
   const replacers = {
     projectName: "projectName",
     iosVersion: "iosVersion",
-    artifactPath: "artifactPath",
+    artifactUrl: "artifactUrl",
     checksum: "checksumValue"
   };
-  const newContent = templateContent.replaceAll(replacers.projectName, `"${projectName}"`).replaceAll(replacers.iosVersion, `.v${iosVersion}`).replaceAll(replacers.artifactPath, `"${normalize(resolve(zipFilePath))}"`).replaceAll(replacers.checksum, `"${checksum}"`);
+  const newContent = templateContent.replaceAll(replacers.projectName, `"${projectName}"`).replaceAll(replacers.iosVersion, `.v${iosVersion}`).replaceAll(replacers.artifactUrl, `"${zipFileUrl}"`).replaceAll(replacers.checksum, `"${checksum}"`);
   core.info("Applying changes...");
   return newContent;
 };
@@ -22763,13 +22765,13 @@ var generateFileChecksum = async (artifactPath) => {
   const checksum = await readFile(zipFilePath).then((res) => generateChecksum(res.toString()));
   return checksum;
 };
-var execute = async (projectFile, projectName, iosVersion, artifactPath) => {
+var execute = async (projectFile, projectName, iosVersion, artifactPath, artifactUrl) => {
   try {
     const [template, checksum] = await Promise.all([
       loadTemplate(),
       generateFileChecksum(artifactPath)
     ]);
-    const newContent = await mutateProjectFile(template, checksum, projectName, iosVersion, artifactPath);
+    const newContent = await mutateProjectFile(template, checksum, projectName, iosVersion, artifactUrl);
     await writeFile(projectFile, newContent);
     await configureGit();
     await commitAndPush(projectFile);
@@ -22780,11 +22782,11 @@ var execute = async (projectFile, projectName, iosVersion, artifactPath) => {
 
 // index.ts
 var run = async () => {
-  const { artifactPath, iosVersion, projectName, projectFile } = getActionInput();
+  const { artifactPath, iosVersion, projectName, projectFile, artifactUrl } = getActionInput();
   const numberIosVersion = Number.parseInt(iosVersion);
   if (!Number.isInteger(numberIosVersion)) {
     throw new Error("iosVersion must be an interger.");
   }
-  await execute(projectFile, projectName, numberIosVersion, artifactPath);
+  await execute(projectFile, projectName, numberIosVersion, artifactPath, artifactUrl);
 };
 run();

@@ -1,2 +1,5 @@
 bun test
 bun run build
+
+git add .
+git commit -m "Build files" --no-verify
