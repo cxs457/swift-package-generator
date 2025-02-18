@@ -39,4 +39,5 @@ jobs:
           project-name: MySwiftPackage
           ios-version: 15 # Example: Override default iOS version
           artifact-path: build/MySwiftPackage.zip # Example: Path to your artifact
+          artifact-url: https://github.com/user-name/project-name/releases/download/v0.2.1/ios-xcframework.zip # Example: URL to your artifact
 

@@ -13,7 +13,10 @@ inputs:
     required: false
     default: '16'
   artifact-path:
-    description: 'Release artifact zip file'
+    description: 'Release artifact location zip file'
+    required: true
+  artifact-url:
+    description: 'Release artifact url zip file'
     required: true
     
 branding:
