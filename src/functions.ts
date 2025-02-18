@@ -1,4 +1,4 @@
-import { join, resolve, normalize } from "node:path";
+import { join, resolve } from "node:path";
 import { readFile, writeFile } from "node:fs/promises";
 import { createHash } from "node:crypto";
 import { error, getInput, info } from "@actions/core";

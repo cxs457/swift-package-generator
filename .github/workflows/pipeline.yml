@@ -1,0 +1,35 @@
+name: Build and Release
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build-release:
+    name: Build and Release
+    runs-on: ubunto-latest
+
+    steps:
+        - uses: actions/checkout@v4
+        - uses: oven-sh/setup-bun@v2
+
+        - run: bun install
+        - run: bun run build
+
+        - name: Checkout code
+          uses: actions/checkout@v4
+
+        - name: Create Release
+          id: create_release
+          uses: actions/create-release@v1
+          with:
+                tag_name: 1.0.${{github.run_number}}
+                release_name: Release 1.0.${{github.run_number}}
+                body: |
+                    Automated release for run number 1.0.${{github.run_number}}
+                draft: false
+                prerelease: false
+                env:
+                GITHUB_TOKEN: ${{ secrets.WORKFLOW_TOKEN }}
