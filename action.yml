@@ -1,0 +1,24 @@
+name: 'Swift Package Generator'
+description: 'Automatically generate and commit Swift Package with input parameters'
+inputs:
+  project-file:
+    description: 'Path to the package.swift file'
+    required: true
+    default: 'package.swift'
+  project-name:
+    description: 'Project Name'
+    required: true
+  ios-version:
+    description: 'IOS target version'
+    required: false
+    default: '16'
+  artifact-path:
+    description: 'Release artifact zip file'
+    required: true
+    
+branding:
+  icon: 'arrow-up'
+  color: 'green'
+runs:
+  using: node20
+  main: 'dist/index.js'
