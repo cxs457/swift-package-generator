@@ -1,27 +1,28 @@
 {
-  "name": "swift-package-generator",
-  "version": "1.0.0",
-  "main": "dist/index.js",
-  "scripts": {
-    "build": "bun build index.ts --outfile dist/index.js --target node",
-    "prepare": "husky"
-  },
-  "author": "Christian Alexsander Santos",
-  "license": "MIT",
-  "description": "",
-  "devDependencies": {
-    "@biomejs/biome": "1.9.4",
-    "@types/bun": "^1.2.2",
-    "@types/node": "^22.13.4",
-    "esbuild": "0.24.2",
-    "husky": "^9.1.7",
-    "typescript": "^5.6.3"
-  },
-  "dependencies": {
-    "@actions/core": "^1.11.1",
-    "@actions/exec": "^1.1.1",
-    "@actions/github": "^6.0.0",
-    "@octokit/rest": "^21.1.1",
-    "@octokit/webhooks-definitions": "^3.68.1"
-  }
+	"name": "swift-package-generator",
+	"version": "1.0.0",
+	"main": "dist/index.js",
+	"scripts": {
+		"build:bun": "bun build index.ts --outfile dist/index.js --target node",
+		"build": "esbuild index.ts --bundle --outfile=dist/index.js --platform=node --target=node20",
+		"prepare": "husky"
+	},
+	"author": "Christian Alexsander Santos",
+	"license": "MIT",
+	"description": "",
+	"devDependencies": {
+		"@biomejs/biome": "1.9.4",
+		"@types/bun": "^1.2.2",
+		"@types/node": "^22.13.4",
+		"esbuild": "^0.25.0",
+		"husky": "^9.1.7",
+		"typescript": "^5.6.3"
+	},
+	"dependencies": {
+		"@actions/core": "^1.11.1",
+		"@actions/exec": "^1.1.1",
+		"@actions/github": "^6.0.0",
+		"@octokit/rest": "^21.1.1",
+		"@octokit/webhooks-definitions": "^3.68.1"
+	}
 }
