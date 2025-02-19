@@ -1,4 +1,4 @@
-import { join, resolve } from "node:path";
+import { resolve } from "node:path";
 import { readFile, writeFile } from "node:fs/promises";
 import { createHash } from "node:crypto";
 import { error, getInput, info } from "@actions/core";
@@ -8,6 +8,7 @@ import type {
 	PullRequest,
 	PushEvent,
 } from "@octokit/webhooks-definitions/schema";
+import fetch from "node-fetch";
 
 const handleError = (err: Error) => {
 	error(err || "Error during operation");
@@ -107,11 +108,10 @@ const mutateProjectFile = async (
 const loadTemplate = async () => {
 	info("Loading template...");
 
-	const templatePath = resolve(join("swift-template.swift"));
-
-	const templateContent = await readFile(templatePath).then((res) =>
-		res.toString(),
-	);
+	const templateContent = await fetch(
+		"https://raw.githubusercontent.com/cxs457/swift-package-generator/refs/heads/main/swift-template.swift",
+		{ method: "GET" },
+	).then((res) => res.text());
 
 	return templateContent;
 };
