@@ -22712,16 +22712,8 @@ var commitAndPush = async (filePath) => {
     core.info("Adding Project.swift to git...");
     await exec.exec("git", ["add", filePath]);
     core.info("Committing changes...");
-    await exec.exec("git", ["commit", "-m", "Generate new Project.swift"]);
-    let branchName = github.context.ref;
-    if (github.context.eventName === "push") {
-      const pushPayload = github.context.payload;
-      branchName = pushPayload.ref;
-    }
-    if (github.context.eventName === "pull_request") {
-      const pushPayload = github.context.payload;
-      branchName = pushPayload.head.ref;
-    }
+    await exec.exec("git", ["commit", "-m", "[skip ci] Generate new Project.swift"]);
+    const branchName = github.context.ref || github.context.payload?.ref || github.context.payload?.head?.ref;
     if (!branchName) {
       throw new Error("Branch name is required");
     }

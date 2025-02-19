@@ -49,19 +49,12 @@ const commitAndPush = async (filePath: string) => {
 		await exec("git", ["add", filePath]);
 
 		info("Committing changes...");
-		await exec("git", ["commit", "-m", "Generate new Project.swift"]);
+		await exec("git", ["commit", "-m", "[skip ci] Generate new Project.swift"]);
 
-		let branchName = ghContext.ref;
-
-		if (ghContext.eventName === "push") {
-			const pushPayload = ghContext.payload as PushEvent;
-			branchName = pushPayload.ref;
-		}
-
-		if (ghContext.eventName === "pull_request") {
-			const pushPayload = ghContext.payload as PullRequest;
-			branchName = pushPayload.head.ref;
-		}
+		const branchName =
+			ghContext.ref ||
+			(ghContext.payload as PushEvent)?.ref ||
+			(ghContext.payload as PullRequest)?.head?.ref;
 
 		if (!branchName) {
 			throw new Error("Branch name is required");
